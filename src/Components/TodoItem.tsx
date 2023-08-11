@@ -1,7 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { MdDone, MdDelete } from 'react-icons/md';
-
+import { useSetRecoilState } from 'recoil';
+import { todoListStates } from '../data/atoms';
 
 const Remove = styled.div`
   display: flex;
@@ -60,18 +61,30 @@ const Text = styled.div<TodoItemProps>`
 
 interface TodoItemProps {
   id?: number;
-  done: boolean;
+  done?: boolean;
   text?: string;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({ id, done, text }) => {
+  const setTodoList = useSetRecoilState(todoListStates);
+
+  const handleToggle = () => {
+    setTodoList((todo) =>
+      todo.map((toggleTodo) => (toggleTodo.id === id ? { ...toggleTodo, done: !toggleTodo.done } : toggleTodo)),
+    );
+  };
+
+  const handleDelete = () => {
+    setTodoList((todo) => todo.filter((deleteTodo) => deleteTodo.id !== id));
+  };
+
   return (
     <TodoItemBlock>
-      <CheckCircle done={done}>
+      <CheckCircle done={done} onClick={handleToggle}>
         {done && <MdDone />}
       </CheckCircle>
       <Text done={done}>{text}</Text>
-      <Remove>
+      <Remove onClick={handleDelete}>
         <MdDelete />
       </Remove>
     </TodoItemBlock>

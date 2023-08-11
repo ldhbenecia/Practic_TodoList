@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { MdAdd } from 'react-icons/md';
+import { useRecoilState } from 'recoil';
+import { todoListStates } from '../data/atoms';
 
 const CircleButton = styled.button<TodoCreateProps>`
   background-color: #38d9a9;
@@ -77,19 +79,50 @@ interface TodoCreateProps {
   open: boolean;
 }
 
+export interface TodoListItemProps {
+  id: number;
+  text: string;
+  done: boolean;
+}
+
 const TodoCreate: React.FC<TodoCreateProps> = () => {
   const [open, setOpen] = useState<boolean>(false);
+  const [inputValue, setInputValue] = useState<string>('');
+  const [todoList, setTodoList] = useRecoilState<TodoListItemProps[]>(todoListStates);
 
   const onToggle = () => {
     setOpen(!open);
+  };
+
+  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const newTodo = {
+      id: Date.now(),
+      text: inputValue,
+      done: false,
+    };
+
+    setInputValue("")
+    setTodoList([...todoList, newTodo]);
+    setOpen(false)
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
   };
 
   return (
     <>
       {open && (
         <InsertFormPositioner>
-          <InsertForm>
-            <Input autoFocus placeholder="할 일을 입력 후, Enter 를 누르세요" />
+          <InsertForm onSubmit={handleSubmit}>
+            <Input
+              value={inputValue}
+              onChange={handleInputChange}
+              autoFocus
+              placeholder="할 일을 입력 후, Enter 를 누르세요"
+            />
           </InsertForm>
         </InsertFormPositioner>
       )}

@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import TodoItem from './TodoItem';
+import { useRecoilValue } from 'recoil';
+import { todoListStates } from '../data/atoms';
 
 const TodoListLayout = styled.div`
   flex: 1;
@@ -9,12 +11,13 @@ const TodoListLayout = styled.div`
 `;
 
 const TodoList = () => {
+  const todoList = useRecoilValue(todoListStates);
+
   return (
     <TodoListLayout>
-      <TodoItem text="프로젝트 생성하기" done={true} />
-      <TodoItem text="프로젝트 생성하기" done={true} />
-      <TodoItem text="프로젝트 생성하기" done={false} />
-      <TodoItem text="프로젝트 생성하기" done={false} />
+      {todoList.map((todo) => (
+        <TodoItem key={todo.id} id={todo.id} done={todo.done} text={todo.text} />
+      ))}
     </TodoListLayout>
   );
 };

@@ -1,5 +1,7 @@
 import React from 'react';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
+import { todoListStates } from '../data/atoms';
 
 const TodoHeadLayout = styled.div`
   padding: 48px 32px 24px 32px;
@@ -35,6 +37,10 @@ const TodoHeader: React.FC = () => {
   const hours = today.getHours();
   const minutes = today.getMinutes();
 
+  const todoList = useRecoilValue(todoListStates);
+  const unDoneTodo = todoList.filter((todo) => !todo.done);
+  const remainTodoCount = unDoneTodo.length;
+
   return (
     <TodoHeadLayout>
       <h1>
@@ -43,7 +49,7 @@ const TodoHeader: React.FC = () => {
       <div className="day">
         {day}요일 {hours}시 {minutes}분
       </div>
-      <div className="tasks-left">오늘의 Todo는 0개 남았어요.</div>
+      <div className="tasks-left">오늘의 Todo는 {remainTodoCount}개 남았어요.</div>
     </TodoHeadLayout>
   );
 };
