@@ -1,7 +1,7 @@
 # TS TodoList
 
 ### 해당 Repository는 학습을 위해서 생성되었습니다.
-- TypeScript, StyeldComponent, Recoil 등등
+- TypeScript, Styled Component, Recoil 등등
 
 #### [Vlpt 모던 리액트 3장](https://react.vlpt.us/mashup-todolist) 강의의 디자인 이용하였습니다.
 
