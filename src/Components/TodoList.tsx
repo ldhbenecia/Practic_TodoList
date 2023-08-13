@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import TodoItem from './TodoItem';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { todoListStates } from '../data/atoms';
 
 const TodoListLayout = styled.div`
@@ -11,7 +11,7 @@ const TodoListLayout = styled.div`
 `;
 
 const TodoList = () => {
-  const todoList = useRecoilValue(todoListStates);
+  const [todoList, setTodoList] = useRecoilState(todoListStates);
 
   return (
     <TodoListLayout>
