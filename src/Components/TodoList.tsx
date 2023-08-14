@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TodoItem from './TodoItem';
-import { useRecoilState } from 'recoil';
-import { todoListStates } from '../data/atoms';
+import axios from 'axios';
+import { TodoListItemProps } from './TodoCreate';
 
 const TodoListLayout = styled.div`
   flex: 1;
@@ -10,13 +10,21 @@ const TodoListLayout = styled.div`
   overflow-y: auto;
 `;
 
-const TodoList = () => {
-  const [todoList, setTodoList] = useRecoilState(todoListStates);
+const TodoList: React.FC = () => {
+  // const [todoList, setTodoList] = useRecoilState(todoListStates);
+  const [todos, setTodos] = useState<TodoListItemProps[]>([]);
+
+  useEffect(() => {
+    axios.get(`http://127.0.0.1:4000/api/v1/todos`).then((response) => {
+      setTodos(response.data);
+      //console.log(response.data);
+    });
+  }, [todos]);
 
   return (
     <TodoListLayout>
-      {todoList.map((todo) => (
-        <TodoItem key={todo.id} id={todo.id} done={todo.done} text={todo.text} />
+      {todos.map((todo) => (
+        <TodoItem key={todo.id} id={todo.id} done={todo.is_done} text={todo.content} />
       ))}
     </TodoListLayout>
   );

@@ -1,8 +1,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { MdDone, MdDelete } from 'react-icons/md';
-import { useSetRecoilState } from 'recoil';
-import { todoListStates } from '../data/atoms';
+import axios from 'axios';
+
+// import { useSetRecoilState } from 'recoil';
+// import { todoListStates } from '../data/atoms';
 
 const Remove = styled.div`
   display: flex;
@@ -66,17 +68,36 @@ interface TodoItemProps {
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({ id, done, text }) => {
-  const setTodoList = useSetRecoilState(todoListStates);
 
-  const handleToggle = () => {
-    setTodoList((todo) =>
-      todo.map((toggleTodo) => (toggleTodo.id === id ? { ...toggleTodo, done: !toggleTodo.done } : toggleTodo)),
-    );
+  // Recoil
+  // const setTodoList = useSetRecoilState(todoListStates);
+
+  // const handleToggle = () => {
+  //   setTodoList((todo) =>
+  //     todo.map((toggleTodo) => (toggleTodo.id === id ? { ...toggleTodo, done: !toggleTodo.done } : toggleTodo)),
+  //   );
+  // };
+
+  // const handleDelete = () => {
+  //   setTodoList((todo) => todo.filter((deleteTodo) => deleteTodo.id !== id));
+  // };
+
+  const handleToggle = async () => {
+    try {
+      await axios.patch(`http://127.0.0.1:4000/api/v1/todos/${id}`);
+    } catch (error) {
+      console.error('Error toggling todo:', error);
+    }
   };
 
-  const handleDelete = () => {
-    setTodoList((todo) => todo.filter((deleteTodo) => deleteTodo.id !== id));
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://127.0.0.1:4000/api/v1/todos/${id}`);
+    } catch (error) {
+      console.error('Error deleting todo:', error);
+    }
   };
+
 
   return (
     <TodoItemBlock>
