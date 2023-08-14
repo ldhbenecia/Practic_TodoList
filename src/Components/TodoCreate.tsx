@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { MdAdd } from 'react-icons/md';
 import { useRecoilState } from 'recoil';
 import { todoListStates } from '../data/atoms';
+import axios from 'axios';
 
 const CircleButton = styled.button<TodoCreateProps>`
   background-color: #38d9a9;
@@ -81,8 +82,8 @@ interface TodoCreateProps {
 
 export interface TodoListItemProps {
   id: number;
-  text: string;
-  done: boolean;
+  content: string;
+  is_done: boolean;
 }
 
 const TodoCreate: React.FC<TodoCreateProps> = () => {
@@ -94,18 +95,23 @@ const TodoCreate: React.FC<TodoCreateProps> = () => {
     setOpen(!open);
   };
 
-  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const newTodo = {
-      id: Date.now(),
-      text: inputValue,
-      done: false,
+      content: inputValue,
+      is_done: false,
     };
 
-    setInputValue("")
-    setTodoList([...todoList, newTodo]);
-    setOpen(false)
+    try {
+      const response = await axios.post('http://127.0.0.1:4000/api/v1/todos', newTodo);
+      setTodoList([...todoList, response.data]);
+      setInputValue('');
+      setOpen(false);
+      //console.log('Todo added successfully:', response.data);
+    } catch (error) {
+      console.error('Error adding todo:', error);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

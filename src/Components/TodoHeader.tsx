@@ -1,7 +1,10 @@
-import React from 'react';
-import { useRecoilValue } from 'recoil';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { todoListStates } from '../data/atoms';
+import axios from 'axios';
+import { TodoListItemProps } from './TodoCreate';
+
+// import { todoListStates } from '../data/atoms';
+// import { useRecoilValue } from 'recoil';
 
 const TodoHeadLayout = styled.div`
   padding: 48px 32px 24px 32px;
@@ -37,9 +40,18 @@ const TodoHeader: React.FC = () => {
   const hours = today.getHours();
   const minutes = today.getMinutes();
 
-  const todoList = useRecoilValue(todoListStates);
-  const unDoneTodo = todoList.filter((todo) => !todo.done);
+  //const todoList = useRecoilValue(todoListStates);
+  
+  const [todos, setTodos] = useState<TodoListItemProps[]>([]);
+  const unDoneTodo = todos.filter((todo) => !todo.is_done);
   const remainTodoCount = unDoneTodo.length;
+
+  useEffect(() => {
+    axios.get(`http://127.0.0.1:4000/api/v1/todos`).then((response) => {
+      setTodos(response.data);
+      //console.log(response.data);
+    });
+  }, [todos]);
 
   return (
     <TodoHeadLayout>
